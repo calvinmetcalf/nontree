@@ -1,35 +1,28 @@
 {
-  "name": "level-tree",
+  "name": "nontree",
   "version": "0.3.0",
-  "description": "geohash (ish) nontree (9-tree) spatial indexing for GeoJSON in LevelDB",
+  "description": "geohash (ish) nontree (9-tree) spatial indexing for GeoJSON",
   "main": "lib/index.js",
   "scripts": {
-    "test": "./node_modules/istanbul/lib/cli.js test ./node_modules/mocha/bin/_mocha test/test.js"
+    "test": "istanbul test _mocha test/test.js"
   },
-  "author": "",
+  "author": "Calvin W. Metcalf B.S.",
   "license": "MIT",
-  "dependencies": {
-    "level-hyper": "~0.18.0",
-    "geojson-bounding-volume": "~0.1.1",
-    "level-sublevel": "~5.2.0",
-    "bluebird": "~1.0.0"
-  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/calvinmetcalf/level-tree.git"
+    "url": "git://github.com/calvinmetcalf/nontree.git"
   },
   "devDependencies": {
-    "mocha-as-promised": "~2.0.0",
-    "chai-as-promised": "~4.1.0",
-    "chai": "~1.8.1",
-    "mocha": "~1.17.0",
-    "istanbul": "~0.2.1"
+    "chai": "^1.9.1",
+    "mocha": "^1.21.4",
+    "istanbul": "^0.3.0"
   },
   "keywords": [
-    "levelup",
-    "hyper-level",
     "geospatial",
     "geohash",
     "geojson"
-  ]
+  ],
+  "dependencies": {
+    "geojson-bounding-volume": "^0.2.2"
+  }
 }

@@ -1,229 +1,93 @@
 'use strict';
-var Tree = require('../lib');
-var schools = require('./schools.json');
-var trails = require('./trails.json');
-var Promise = require('bluebird');
-var fs = require('fs');
-function removeAll(path){
-  fs.readdirSync(path).forEach(function(v){
-    fs.unlinkSync(path+'/'+v);
-  });
-  fs.rmdirSync(path);
-}
-require("mocha-as-promised")();
+var NonTree = require('../lib');
 var chai = require("chai");
-var should = chai.should();
-var chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
+/*var should = */chai.should();
+
 describe('tree',function(){
-  describe('basic',function(){
-    it('should work', function(){
-      var tree = new Tree('test');
-      tree.should.exist;
-      return tree.destroy().should.become(true);
-    });
-    it('should work multiple times', function(){
-      var tree = new Tree('test');
-      return tree.close().then(function(){
-        var tree2 = new Tree('test');
-        tree2.should.exist;
-        return tree2.destroy().should.become(true);
-      });
-    });
+  it ('should work', function () {
+    var tree = new NonTree();
+    tree.decode('a').should.deep.equal([-180, 30, -60, 90]);
   });
-  describe('next',function(){
-    it('should work',function(){
-      Tree.prototype.next('aaa').should.equal('aab');
-    });
-    it('should wrap around',function(){
-      Tree.prototype.next('aai').should.equal('aba');
-    });
-    it('should wrap give a string for a string',function(){
-      Tree.prototype.next('').should.equal('');
-    });
-    it('should thorw an error for an invalid string',function(){
-      return new Promise(function(yes,no){
-        Tree.prototype.next('ak');
-      }).should.be.rejected;
-    });
+  it ('should work return a point', function () {
+    var tree = new NonTree();
+    tree.decode('a', true).should.deep.equal([-120 , 60]);
   });
-  describe('intermediate',function(){
-    this.timeout(50000);
-    var tree;
-    beforeEach(function(){
-      tree = new Tree('test');
-      return tree;
+  it ('should work the other way', function () {
+    var tree = new NonTree();
+    tree.encode([-120 , 60]).should.deep.equal('aeeeeeeeee');
+  });
+  it ('should work the other way with a precision', function () {
+    var tree = new NonTree({
+      precision: 3
     });
-    afterEach(function(){
-      return tree.destroy();
+    tree.encode([-120 , 60]).should.deep.equal('aee');
+  });
+  it('should be able to encode a bbox', function () {
+    var tree = new NonTree();
+    tree.encode([-180, 30, -60, 90]).should.deep.equal(['a']);
+  });
+  it('should throw on somethign weird', function () {
+    var tree = new NonTree();
+    tree.encode.bind(tree, [-180, 30, -60]).should.throw(TypeError);
+  });
+  it ('should be able to encode geojson', function () {
+    var tree = new NonTree({
+      precision: 3,
+      maxPieces: 4
     });
-    after(function(){
-      removeAll('__tree__blah');
-      removeAll('__tree__tree2');
-    })
-    it('should be able to be closed twice',function(){
-      return tree.close().should.become(true);
-    });
-    describe('points', function(){
-      it('should be able to add stuff',function(){
-        return tree.insert({
-          type:schools.features[0].type,
-          geometry:schools.features[0].geometry,
-          properties:schools.features[0].properties
-        }).then(function(a){
-          return true;
-        }).should.become(true);
-      });
-      it('should be able to add stuff and then get it',function(){
-        return tree.insert(schools.features[0]).then(function(id){
-          return tree.fetch(id);
-        }).then(function(item){
-          return item.geometry;
-        }).should.become(schools.features[0].geometry);
-      });
-      it('should be able to add stuff, close it, open it and then get it',function(){
-        return tree.insert(schools.features[0]).then(function(id){
-          return tree.close().then(function(){
-            tree = new Tree('test');
-          }).then(function(){
-            return tree.fetch(id);
-          });
-        }).then(function(item){
-          return item.geometry;
-        }).should.become(schools.features[0].geometry);
-      });
-      it('should be able to search stuff',function(){
-        return tree.insert(schools.features[0]).then(function(a){
-          return tree.search([-75,35,-65,45]);
-        }).then(function(reslt){
-          return reslt[0].id;
-        }).should.become(1);
-      });
-      it('should be able to remove stuff',function(){
-        return tree.load([schools.features[0]]).then(function(id){
-          return tree.load([schools.features[1]]);
-        }).then(function(){
-            return tree.remove(1);
-        }).then(function(){
-          return tree.search([-100,0,0,80]);
-        }).then(function(reslt){
-          return reslt[0].id;
-        }).should.become(2);
-      });
-      it('should be able to insert stuff batch',function(){
-        return tree.load(schools.features).then(function(){
-          return tree.search([-100,0,0,80]);
-        }).then(function(reslt){
-          return reslt.length
-        }).should.become(330);
-      });
-      it('should be able to insert stuff batch and then remove stuff',function(){
-        return tree.load(schools).then(function(){
-          return tree.fetch(1).then(function(answer){
-            return tree.remove(1);
-          });
-        }).then(function(){
-          return tree.search([-100,0,0,80]);
-        }).then(function(reslt){
-          return reslt.length
-        }).should.become(329);
-      });
-    });
-    describe('lines', function(){
-      it('should be able to add stuff',function(){
-        return tree.insert({
-          type:trails.features[0].type,
-          geometry:trails.features[0].geometry,
-          properties:trails.features[0].properties
-        }).then(function(a){
-          return true;
-        }).should.become(true);
-      });
-      it('should be able to add stuff and then get it',function(){
-        return tree.insert(trails.features[0]).then(function(id){
-          return tree.fetch(id);
-        }).then(function(item){
-          return item.geometry;
-        }).should.become(trails.features[0].geometry);
-      });
-      it('should be able to add stuff, close it, open it and then get it',function(){
-        return tree.insert(trails.features[0]).then(function(id){
-          return tree.close().then(function(){
-            tree = new Tree('test');
-          }).then(function(){
-            return tree.fetch(id);
-          });
-        }).then(function(item){
-          return item.geometry;
-        }).should.become(trails.features[0].geometry);
-      });
-      it('should be able to search stuff',function(){
-        return tree.insert(trails.features[0]).then(function(a){
-          return tree.search([-75,35,-65,45]);
-        }).then(function(reslt){
-          return reslt[0].id;
-        }).should.become(1);
-      });
-      it('should be able to remove stuff',function(){
-        return tree.load([trails.features[0]]).then(function(id){
-          return tree.load([trails.features[1]]);
-        }).then(function(){
-            return tree.remove(1);
-        }).then(function(){
-          return tree.search([-75,35,-65,45]);
-        }).then(function(reslt){
-          return reslt[0].id;
-        }).should.become(2);
-      });
-      it('should be able to insert stuff batch',function(){
-        return tree.load(trails.features).then(function(){
-          return tree.search([-75,35,-65,45]);
-        }).then(function(reslt){
-          return reslt.length
-        }).should.become(386);
-      });
-      it('should be able to insert stuff batch and then remove stuff',function(){
-        return tree.load(trails).then(function(){
-          return tree.fetch(1).then(function(answer){
-            return tree.remove(1);
-          });
-        }).then(function(){
-          return tree.search([-75,35,-65,45]);
-        }).then(function(reslt){
-          return reslt.length
-        }).should.become(385);
-      });
-    });
-    it('should throw an error if we look for stuff in a closed db',function(){
-      return tree.close().then(function(){
-        return tree.get('not real');
-      }).should.be.rejected;
-    });
-    it('should throw an error if we delete stuff in a closed db',function(){
-      return tree.close().then(function(){
-        return tree.del('not real');
-      }).should.be.rejected;
-    });
-    it('should throw an error if we put stuff in a closed db',function(){
-      return tree.close().then(function(){
-        return tree.put('not real');
-      }).should.be.rejected;
-    });
-    it('should throw an error if we destory a db twice',function(){
-      return new Tree('blah').then(function(tree){
-        return tree.destroy().then(function(){
-          return tree.destroy();
-        });
-      }).should.be.rejected;
-    });
-    it("should throw an error if we don't give a name",function(){
-      return new Tree().should.be.rejected;
-    });
-    it("should throw an error if we specify it can't be created we do",function(){
-      return new Tree('tree2',{createIfMissing:false}).should.be.rejected;
-    });
-    it("should throw an error if we try to create it twice",function(){
-      return new Tree('test',{errorIfExists:true}).should.be.rejected;
-    });
+    tree.encodeFeature({
+      type: 'Point',
+      coordinates: [-120 , 60]
+    }).should.deep.equal(['aee']);
+    tree.encodeFeature({
+      geometry: {
+        type: 'Point',
+        coordinates: [-120 , 60]
+      },
+      properties: {},
+      type: 'Feature'
+    }).should.deep.equal(['aee']);
+    tree.encodeFeature({
+      geometry: {
+        type: 'MultiPoint',
+        coordinates: [[-120 , 60], [120 , 60], [120 , -60], [-120 , -60]]
+      },
+      properties: {},
+      type: 'Feature'
+    }).should.deep.equal(['aee', 'cee', 'iee', 'gee']);
+    tree.encodeFeature({
+      geometry: {
+        type: 'LineString',
+        coordinates: [[-100 , 850], [100 , 85]]
+      },
+      properties: {},
+      type: 'Feature'
+    }).should.deep.equal([
+      'b',
+      "aca",
+      "acb",
+      "acc",
+      "ca"
+    ]);
+    tree.encodeFeature.bind(tree, {
+      geometry: {
+        type: 'Pint',
+        coordinates: [-120 , 60]
+      },
+      properties: {},
+      type: 'Feature'
+  }).should.throw(TypeError);
+  });
+  it('should be able to query', function () {
+    var tree = new NonTree();
+    tree.query('a', 'aa').should.equal(true);
+    tree.query(['aeeei','aeefa','gggg'], 'aeeeig').should.equal(true);
+  });
+  it('should be able to query with weird data', function () {
+    var tree = new NonTree();
+    tree.query('', 'aa').should.equal(true);
+    tree.query.bind(tree, ['aeeei','aeefy','gggg'], 'aeeeig').should.throw(Error);
+    tree.query.bind(tree, ['aeeya','aee','gggg'], 'aeeeig').should.not.throw(Error);
+    tree.query.bind(tree, ['aeeyi','aee','gggg'], 'aeeeig').should.throw(Error);
   });
 });

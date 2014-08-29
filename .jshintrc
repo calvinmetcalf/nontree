@@ -1,0 +1,27 @@
+{
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "newcap": true,
+  "noarg": true,
+  "sub": true,
+  "undef": "nofunc",
+  "unused": "vars",
+  "eqnull": true,
+  "node": true,
+  "strict": true,
+  "trailing": true,
+  "globalstrict": true,
+  "white": true,
+  "indent": 2,
+  "forin": true,
+   "predef": [
+    "describe",
+    "it",
+    "after",
+    "beforeEach",
+    "afterEach",
+    "testUtils",
+    "emit"
+  ]
+}
