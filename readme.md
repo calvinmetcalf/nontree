@@ -94,7 +94,7 @@ which we can do by flipping the middle column on it's horizontal axis and flippi
 ↘↗↘  ↗↘↗⟶↘↗↘
 ↙↖↙  ↖↙↖  ↙↖↙
 ↘↗↘⟶↗↘↗  ↘↗↘
-            ↓
+             ↓
 ↙↖↙⟵↖↙↖  ↙↖↙
 ↘↗↘  ↗↘↗  ↘↗↘
 ↙↖↙  ↖↙↖⟵↙↖↙
