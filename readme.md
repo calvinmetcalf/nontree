@@ -47,10 +47,19 @@ nonTree.encodeFeature(feature);
 Takes a geojson feature or geometry and returns an array of hashes.
 
  ```js
+nonTree.toRange(array);
+ ```
+
+Takes a hash or array of geohashes and returns the ranges they represent in the form of an array of object with `start` and `end` prosperities note that the end is noninclusive, so `nonTree.toRange('ab');` returns `[{start: 'ab', end: 'ac'}]`.  Adjastent ranges are merged so `nonTree.toRange(['ab', 'di', ac]);` would return `[[{start: 'ab', end: 'ad'}, {start: 'di', end: 'e'}]`
+
+
+
+ ```js
 nonTree.query(array, hash);
  ```
 
- Takes an array of hashes and a hash, tests if the has is covered by any of the hashes in the array, returns a boolean.
+Takes an array of hashes and a hash, tests if the has is covered by any of the hashes in the array, returns a boolean.
+
  
 Hibertish Curves
 ====
@@ -79,4 +88,18 @@ and the blocks direction can be described as ↘, the next level down to get the
 ↘↗↘
 ```
 
-which we can do by flipping the middle column on it's horizontal axis and flipping the middle row on its vertical axis, the middle square ends up getting flipped twice (equivalent to being rotated 180 degrees).
+which we can do by flipping the middle column on it's horizontal axis and flipping the middle row on its vertical axis, the middle square ends up getting flipped twice (equivalent to being rotated 180 degrees). This pattern continues all the way down.
+
+```
+↘↗↘  ↗↘↗⟶↘↗↘
+↙↖↙  ↖↙↖  ↙↖↙
+↘↗↘⟶↗↘↗  ↘↗↘
+            ↓
+↙↖↙⟵↖↙↖  ↙↖↙
+↘↗↘  ↗↘↗  ↘↗↘
+↙↖↙  ↖↙↖⟵↙↖↙
+↓
+↘↗↘  ↗↘↗⟶↘↗↘
+↙↖↙  ↖↙↖  ↙↖↙
+↘↗↘⟶↗↘↗  ↘↗↘
+```

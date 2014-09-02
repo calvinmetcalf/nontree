@@ -87,7 +87,7 @@ describe('tree',function(){
     var tree = new NonTree();
     tree.query('', 'aa').should.equal(true);
     tree.query.bind(tree, ['aeeei','aeefy','gggg'], 'aeeeig').should.throw(Error);
-    tree.query.bind(tree, ['aeeya','aee','gggg'], 'aeeeig').should.not.throw(Error);
+    tree.query.bind(tree, ['aeeya','aee','gggg', 'a', 'aa'], 'aeeeig').should.not.throw(Error);
     tree.query.bind(tree, ['aeeyi','aee','gggg'], 'aeeeig').should.throw(Error);
   });
 });
