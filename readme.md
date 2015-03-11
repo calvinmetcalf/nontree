@@ -67,12 +67,12 @@ Hibertish Curves
 A basic set of 9 tiles is arranged as follows
 
 ```
-a  b  c
-f  e  d
-g  h  i
+1  2  3
+6  5  4
+7  8  9
 ```
 
-in other words it's direction is
+you can think of this as a set of directions 
 
 ```
 ⟶  ⟶  ↓
@@ -80,7 +80,30 @@ in other words it's direction is
 ⟶  ⟶  ⟶
 ```
 
-and the blocks direction can be described as ↘, the next level down to get the blocks to line up we need to get them into this pattern
+you want it to line up so that the first tile of the next block lines up with the last one of this one, so the next tile needs to be
+
+```
+⟶  ⟶  ↓    ⟶  ⟶  ⟶
+↓   ⟵  ⟵   ↑   ⟵  ⟵
+⟶  ⟶  ⟶   ⟶  ⟶   ↑
+```
+for a whole set of 9 blocks is 
+
+```
+⟶  ⟶   ↓   ⟶  ⟶  ⟶   ⟶  ⟶   ↓   
+↓   ⟵  ⟵   ↑   ⟵  ⟵   ↓   ⟵  ⟵
+⟶  ⟶  ⟶   ⟶  ⟶   ↑   ⟶  ⟶   ↓
+
+↓   ⟵  ⟵   ⟵  ⟵  ⟵   ↓   ⟵  ⟵   
+⟶  ⟶   ↓   ⟶  ⟶   ↑   ⟶  ⟶   ↓
+↓   ⟵  ⟵   ↑   ⟵  ⟵   ⟵  ⟵  ⟵
+
+⟶  ⟶   ↓   ⟶  ⟶  ⟶   ⟶  ⟶   ↓   
+↓   ⟵  ⟵   ↑   ⟵  ⟵   ↓   ⟵  ⟵
+⟶  ⟶  ⟶   ⟶  ⟶   ↑   ⟶  ⟶   ↓
+```
+
+you can represent this more compactly by symbolizing each block as an arrow
 
 ```
 ↘↗↘
@@ -88,7 +111,7 @@ and the blocks direction can be described as ↘, the next level down to get the
 ↘↗↘
 ```
 
-which we can do by flipping the middle column on it's horizontal axis and flipping the middle row on its vertical axis, the middle square ends up getting flipped twice (equivalent to being rotated 180 degrees). This pattern continues all the way down.
+and this pattern extends all the way down by the simple rule of flipping the middle column on it's horizontal axis and flipping the middle row on its vertical axis, the middle square ends up getting flipped twice (equivalent to being rotated 180 degrees).
 
 ```
 ↘↗↘  ↗↘↗⟶↘↗↘
