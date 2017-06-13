@@ -5,7 +5,7 @@ An experiment in spatial indexing ternary geohash in other words instead of a qu
 
 Points are storied by finding the full key for the point, multipoints have a key inserted for each point, and line and polygon features are broken up into a number of bboxen which cover it.
 
-According to wikipedia this is actuall a varient on the [Peano curve](https://en.wikipedia.org/wiki/Peano_curve).
+According to wikipedia this is actually a variant on the [Peano curve](https://en.wikipedia.org/wiki/Peano_curve).
 
 References 
 ===
